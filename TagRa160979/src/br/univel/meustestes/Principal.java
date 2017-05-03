@@ -128,22 +128,22 @@ public class Principal {
 					+ node.getConteudo().getValor() + "\n");
 
 		}
-		sb.append(printFilhos(node, node.getConteudo().getId()));
+		sb.append(printFilhos(node));
 
 		System.out.println(sb.toString());
 	}
 
-	public String printFilhos(UniNode<Conta> node, Object id) {
+	public String printFilhos(UniNode<Conta> node) {
 
 		StringBuilder sb = new StringBuilder();
-		if (node.isLeaf() == false) {
+		if (!node.isLeaf()) {
 			for (UniNode<Conta> no : node.getFilhos()) {
 				if (no.isLeaf()) {
 					sb.append("\t");
 				}
 				sb.append(" " + no.getConteudo().getId() + "." + no.getConteudo().getNome() + " R$"
 						+ no.getConteudo().getValor() + "\n");
-				sb.append(printFilhos(no, id));
+				sb.append(printFilhos(no));
 			}
 
 		}
