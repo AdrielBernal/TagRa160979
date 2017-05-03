@@ -1,7 +1,6 @@
 package br.univel.meustestes;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import br.univel.minhaarvore.UniArvore;
 import br.univel.minhaarvore.UniArvoreImpl;
@@ -12,16 +11,19 @@ public class Principal {
 
 	public Principal() {
 
-		Conta contaAgua = new Conta(1, "Água", new BigDecimal(101.28));
+		Conta despesasOper = new Conta(1, "Despesas Operacionais", new BigDecimal(0));
+		UniNode<Conta> noDeOpr = new UniNodeImpl<>(despesasOper);
+
+		Conta contaAgua = new Conta(1, "Água", new BigDecimal("101.28"));
 		UniNode<Conta> noAgua = new UniNodeImpl<>(contaAgua);
 
-		Conta contaAluguel = new Conta(2, "Aluguel", new BigDecimal(900.00));
+		Conta contaAluguel = new Conta(2, "Aluguel", new BigDecimal("900.00"));
 		UniNode<Conta> noAlu = new UniNodeImpl<>(contaAluguel);
 
-		Conta contaIntTel = new Conta(3, "Internet e Telefone", new BigDecimal(165.35));
+		Conta contaIntTel = new Conta(3, "Internet e Telefone", new BigDecimal("165.35"));
 		UniNode<Conta> noIntTel = new UniNodeImpl<>(contaIntTel);
 
-		Conta contaEnElet = new Conta(4, "Energia Elétrica", new BigDecimal(252.58));
+		Conta contaEnElet = new Conta(4, "Energia Elétrica", new BigDecimal("252.58"));
 		UniNode<Conta> noEnElet = new UniNodeImpl<>(contaEnElet);
 
 		Conta despesasAdm = new Conta(1, "Despesas Administrativas", new BigDecimal(0));
@@ -31,8 +33,6 @@ public class Principal {
 		noDeAdm.addFilho(noIntTel);
 		noDeAdm.addFilho(noEnElet);
 
-		Conta despesasOper = new Conta(1, "Despesas Operacionais", new BigDecimal(0));
-		UniNode<Conta> noDeOpr = new UniNodeImpl<>(despesasOper);
 		noDeOpr.addFilho(noDeAdm);
 
 		Conta contaBeneficios = new Conta(1, "Benefícios", new BigDecimal("500.35"));
@@ -52,10 +52,10 @@ public class Principal {
 
 		noDeOpr.addFilho(noGastoPessoal);
 
-		Conta contaLimpeza = new Conta(1, "Serviços de Limpeza", new BigDecimal("1250.55"));
+		Conta contaLimpeza = new Conta(1, "Serviços de Limpeza", new BigDecimal("799.25"));
 		UniNode<Conta> noLimpeza = new UniNodeImpl<>(contaLimpeza);
 
-		Conta contaManutencao = new Conta(2, "Serviços de Manutenção", new BigDecimal("987.90"));
+		Conta contaManutencao = new Conta(2, "Serviços de Manutenção", new BigDecimal("948.90"));
 		UniNode<Conta> noManutencao = new UniNodeImpl<>(contaManutencao);
 
 		Conta manutencaoLimpeza = new Conta(3, "Manutenção e Limpeza", new BigDecimal(0));
@@ -65,10 +65,10 @@ public class Principal {
 
 		noDeOpr.addFilho(noManutencaoLimpeza);
 
-		Conta contaMatEs = new Conta(1, "Material de Escritorio", new BigDecimal("128.95"));
+		Conta contaMatEs = new Conta(1, "Material de Escritorio", new BigDecimal("1123.65"));
 		UniNode<Conta> noMatEs = new UniNodeImpl<>(contaMatEs);
 
-		Conta contaMatLim = new Conta(2, "Material de Limpeza", new BigDecimal("87.20"));
+		Conta contaMatLim = new Conta(2, "Material de Limpeza", new BigDecimal("235.70"));
 		UniNode<Conta> noMatLim = new UniNodeImpl<>(contaMatLim);
 
 		Conta mat = new Conta(4, "Materiais", new BigDecimal(0));
@@ -79,14 +79,13 @@ public class Principal {
 		noDeOpr.addFilho(noMat);
 
 		UniArvore<Conta> planoContas = new UniArvoreImpl(noDeOpr);
-		
-		somarFilhos(noDeOpr);
-
+		noDeOpr.getConteudo().setValor(somarFilhos(noDeOpr));
 		/**
 		 * Mostra todo o plano de contas, inclusive com tabulações (\t) a cada
 		 * nível.
 		 */
-		planoContas.mostrarTodosConsole();
+		// UniNode<Conta> nodeteste = (UniNode<Conta>) planoContas.getRaiz();
+		mostrarTodosConsole(noDeOpr);
 
 		// O exercício consiste em identificar a necessidade de
 		// novos métodos para finalizar a tarefa, sempre lembrando
@@ -105,16 +104,50 @@ public class Principal {
 	 * 
 	 * @param planoContas
 	 */
-	private void somarFilhos(UniNode<Conta> noDeOpr) {
-		List<UniNode<Conta>> conta = noDeOpr.getFilhos();
-		for (int i = 0; i < conta.size(); i++) {
-			BigDecimal valor = new BigDecimal(0);
-			for (int j = 0; j < conta.get(i).getFilhos().size(); j++) {
-				valor = valor.add(conta.get(i).getFilhos().get(j).getConteudo().getValor());
+
+	public BigDecimal somarFilhos(UniNode<Conta> node) {
+		BigDecimal soma = node.getConteudo().getValor();
+		if (!node.isLeaf()) {
+			soma = node.getConteudo().getValor();
+			for (UniNode<Conta> n : node.getFilhos()) {
+				soma = soma.add(somarFilhos(n));
+				if (n.getPai() != null) {
+					n.getPai().getConteudo().setValor(n.getPai().getConteudo().getValor().add(soma));
+				}
 			}
-			conta.get(i).getConteudo().setValor(valor);
-			System.out.println(conta.get(i).getConteudo().getValor());
 		}
+		return soma;
+	}
+
+	public void mostrarTodosConsole(UniNode<Conta> node) {
+		StringBuilder sb = new StringBuilder();
+
+		if (node != null) {
+
+			sb.append(node.getConteudo().getId() + "." + node.getConteudo().getNome() + " R$"
+					+ node.getConteudo().getValor() + "\n");
+
+		}
+		sb.append(printFilhos(node, node.getConteudo().getId()));
+
+		System.out.println(sb.toString());
+	}
+
+	public String printFilhos(UniNode<Conta> node, Object id) {
+
+		StringBuilder sb = new StringBuilder();
+		if (node.isLeaf() == false) {
+			for (UniNode<Conta> no : node.getFilhos()) {
+				if (no.isLeaf()) {
+					sb.append("\t");
+				}
+				sb.append(" " + no.getConteudo().getId() + "." + no.getConteudo().getNome() + " R$"
+						+ no.getConteudo().getValor() + "\n");
+				sb.append(printFilhos(no, id));
+			}
+
+		}
+		return sb.toString();
 
 	}
 

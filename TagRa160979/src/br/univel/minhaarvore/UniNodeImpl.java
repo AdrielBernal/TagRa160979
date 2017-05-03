@@ -8,16 +8,16 @@ public class UniNodeImpl<T> implements UniNode<T> {
 	private UniNode<T> pai;
 	private List<UniNode<T>> filhos;
 	private T conteudo;
-	
+
 	public UniNodeImpl(T t) {
 		this.conteudo = t;
 	}
-	
+
 	@Override
 	public T getConteudo() {
 		return this.conteudo;
 	}
-	
+
 	@Override
 	public UniNode<T> getPai() {
 		return pai;
@@ -33,8 +33,9 @@ public class UniNodeImpl<T> implements UniNode<T> {
 		if (this.filhos == null) {
 			this.filhos = new ArrayList<>();
 		}
+		node.setPai(this);
 		this.filhos.add(node);
-		
+
 	}
 
 	@Override
@@ -42,8 +43,10 @@ public class UniNodeImpl<T> implements UniNode<T> {
 		return this.filhos == null;
 	}
 
+	@Override
+	public void setPai(UniNode<T> node) {
+		this.pai = node;
 
-
-
+	}
 
 }

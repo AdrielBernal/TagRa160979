@@ -1,26 +1,24 @@
 package br.univel.minhaarvore;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class UniArvoreImpl<T> implements UniArvore<T> {
 
-	class UniNode {
-
-	}
-
-	private T raiz;
+	private UniNode<T> raiz;
 
 	@Override
-	public T getRaiz() {
-		return this.raiz;
+	public UniNode<T> getRaiz() {
+		return (UniNode<T>) raiz;
 	}
 
-	public UniArvoreImpl(T noRaiz) {
+	public UniArvoreImpl(UniNode<T> noRaiz) {
 		this.raiz = noRaiz;
 	}
 
 	@Override
 	public void mostrarTodosConsole() {
-		// TODO Auto-generated method stub
-
 	}
+
 
 }

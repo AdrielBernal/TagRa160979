@@ -13,6 +13,8 @@ public interface UniNode<T> {
 	public List<UniNode<T>> getFilhos();
 	
 	public void addFilho(UniNode<T> node);
+
+	public void setPai(UniNode<T> node);
 	
 	
 	
