@@ -108,13 +108,10 @@ public class Principal {
 	public BigDecimal somarFilhos(UniNode<Conta> node) {
 		BigDecimal soma = node.getConteudo().getValor();
 		if (!node.isLeaf()) {
-			soma = node.getConteudo().getValor();
 			for (UniNode<Conta> n : node.getFilhos()) {
 				soma = soma.add(somarFilhos(n));
-				if (n.getPai() != null) {
-					n.getPai().getConteudo().setValor(n.getPai().getConteudo().getValor().add(soma));
-				}
 			}
+			node.getConteudo().setValor(soma);
 		}
 		return soma;
 	}
